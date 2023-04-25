@@ -44,6 +44,33 @@ class ElementService {
     return HierarchyElement.fromJson(response.data)
   }
 
+    /**
+   * Fetch all chieldren elements in a hierarchy with their properties and attributes
+   *
+   * @param {string} dimensionName The name of the dimension
+   * @param {string} hierarchyName The name of the hierarchy
+   * @returns {HierarchyElement[]} Instances of the `HierarchyElement` model
+   *
+   */
+
+    async getChildren(
+      dimensionName: string,
+      hierarchyName: string,
+      elementName: string
+    ): Promise<HierarchyElement[]> {
+      const response = await this.http.GET<ElementsResponse>(
+        `/api/v1/Dimensions('${fixedEncodeURIComponent(
+          dimensionName
+        )}')/Hierarchies('${fixedEncodeURIComponent(
+          hierarchyName
+        )}')/Elements('${fixedEncodeURIComponent(elementName)}')/Components?$expand=*`
+      )
+      return response.data.value.map((element: ElementResponse) =>
+        HierarchyElement.fromJson(element)
+      )
+    }
+  
+
   /**
    * Fetch all elements in a hierarchy with their properties and attributes
    *
